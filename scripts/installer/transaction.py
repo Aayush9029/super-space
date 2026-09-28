@@ -35,6 +35,7 @@ def managed_paths(home, project):
         ".local/share/applications/super-space.desktop",
         ".config/hypr/hyprland.lua", ".config/hypr/super-space.lua",
         ".config/omarchy/shell.json", ".config/omarchy/shell.super-space.tmp",
+        ".config/omarchy/plugins/io.github.aayush9029.super-space",
         ".config/omarchy/plugins/super-space.launcher",
         ".config/super-space/config.toml", ".local/state/super-space/backups",
         ".config/chromium-flags.conf", ".config/chromium-flags.conf.super-space.tmp",

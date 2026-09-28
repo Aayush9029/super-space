@@ -97,8 +97,8 @@ try {
   }
   assert.match(await fs.readFile(calls,"utf8"),/systemctl --user restart super-space.service/);
   const expectedShell = structuredClone(originalShell);
-  expectedShell.bar.layout.left[0].id = "super-space.launcher";
-  expectedShell.bar.layout.right[0].id = "super-space.launcher";
+  expectedShell.bar.layout.left[0].id = "io.github.aayush9029.super-space";
+  expectedShell.bar.layout.right[0].id = "io.github.aayush9029.super-space";
   const verifyDesktop = async () => {
     await verifyBrowserArtifacts(path.join(installed, "runtime/browser-extension"), "chromium");
     await verifyBrowserArtifacts(path.join(installed, "runtime/browser-extension-firefox"), "firefox");
@@ -111,9 +111,10 @@ try {
     assert.deepEqual(JSON.parse(await fs.readFile(path.join(fixtureHome,".config/omarchy/shell.json"),"utf8")),expectedShell,"Replace launcher widgets while retaining other modules and settings");
     assert.equal(await fs.readFile(path.join(fixtureHome,".local/state/super-space/backups/hyprland.lua"),"utf8"),originalHypr);
     assert.equal(await fs.readFile(path.join(fixtureHome,".local/state/super-space/backups/shell.json"),"utf8"),originalShellText);
-    const widget = path.join(fixtureHome,".config/omarchy/plugins/super-space.launcher");
-    assert.ok((await fs.readFile(path.join(widget,"BarWidget.qml"),"utf8")).includes("super-space"));
-    assert.equal(parseObject(await fs.readFile(path.join(widget,"manifest.json"),"utf8")).id,"super-space.launcher");
+    const widget = path.join(fixtureHome,".config/omarchy/plugins/io.github.aayush9029.super-space");
+    assert.ok((await fs.readFile(path.join(widget,"scripts/omarchy-bar/BarWidget.qml"),"utf8")).includes("super-space"));
+    assert.equal(parseObject(await fs.readFile(path.join(widget,"manifest.json"),"utf8")).id,"io.github.aayush9029.super-space");
+    assert.equal(await fs.stat(path.join(fixtureHome,".config/omarchy/plugins/super-space.launcher")).catch(() => null), null, "The pre-marketplace widget folder must be removed");
   };
   await verifyDesktop();
   const userFiles = new Map([
@@ -200,10 +201,11 @@ try {
   }
   await fs.unlink(path.join(fixtureHome, ".local/bin/super-space"));
   await fs.symlink(path.join(legacyRoot, "bin/command-space"), path.join(fixtureHome, ".local/bin/command-space"));
-  await fs.rename(path.join(fixtureHome, ".config/omarchy/plugins/super-space.launcher"), path.join(fixtureHome, ".config/omarchy/plugins/command-space.launcher"));
+  // Command Space installs used the widget ID command-space.launcher.
+  await fs.rename(path.join(fixtureHome, ".config/omarchy/plugins/io.github.aayush9029.super-space"), path.join(fixtureHome, ".config/omarchy/plugins/command-space.launcher"));
   for (const relative of [".config/hypr/hyprland.lua", ".config/omarchy/shell.json"]) {
     const file = path.join(fixtureHome, relative);
-    await fs.writeFile(file, (await fs.readFile(file, "utf8")).replaceAll("super-space", "command-space"));
+    await fs.writeFile(file, (await fs.readFile(file, "utf8")).replaceAll("io.github.aayush9029.super-space", "super-space.launcher").replaceAll("super-space", "command-space"));
   }
   const oldHost = path.join(fixtureHome, ".config/chromium/NativeMessagingHosts/com.commandspace.bridge.json");
   await fs.writeFile(oldHost, JSON.stringify({name:"com.commandspace.bridge",path:path.join(legacyRoot,"runtime/browser-host")}));

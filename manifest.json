@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.aayush9029.super-space",
+  "name": "Super Space",
+  "version": "0.1.0",
+  "author": "Aayush Pokharel",
+  "license": "MIT",
+  "description": "Bar button that opens the Super Space launcher for apps, Omarchy commands, and extensions.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "scripts/omarchy-bar/BarWidget.qml" },
+  "barWidget": {
+    "displayName": "Super Space",
+    "description": "Apps, Omarchy commands, and extensions",
+    "category": "Compositor",
+    "allowMultiple": false
+  }
+}

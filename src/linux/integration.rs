@@ -176,10 +176,12 @@ pub fn uninstall() -> Result<(), String> {
     let _ = Command::new("systemctl")
         .args(["--user", "disable", "--now", "super-space.service"])
         .status();
-    update_bar_widget("super-space.launcher", "omarchy.menu")?;
-    let plugin = home().join(".config/omarchy/plugins/super-space.launcher");
-    if plugin.exists() {
-        fs::remove_dir_all(plugin).map_err(|e| e.to_string())?;
+    for id in [PLUGIN_ID, LEGACY_PLUGIN_ID] {
+        update_bar_widget(id, "omarchy.menu")?;
+        let plugin = home().join(".config/omarchy/plugins").join(id);
+        if plugin.exists() {
+            fs::remove_dir_all(plugin).map_err(|e| e.to_string())?;
+        }
     }
     let path = home().join(".config/hypr/hyprland.lua");
     let text = fs::read_to_string(&path).map_err(|e| e.to_string())?;
@@ -306,20 +308,30 @@ fn update_bar_widget(from: &str, to: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// The bar widget's plugin ID, shared with the Omarchy plugin marketplace listing.
+const PLUGIN_ID: &str = "io.github.aayush9029.super-space";
+/// The ID earlier versions installed the widget under.
+const LEGACY_PLUGIN_ID: &str = "super-space.launcher";
+
 fn install_bar_widget() -> Result<(), String> {
-    let folder = home().join(".config/omarchy/plugins/super-space.launcher");
-    fs::create_dir_all(&folder).map_err(|e| e.to_string())?;
+    let plugins = home().join(".config/omarchy/plugins");
+    let legacy = plugins.join(LEGACY_PLUGIN_ID);
+    if legacy.exists() {
+        fs::remove_dir_all(legacy).map_err(|e| e.to_string())?;
+    }
+    // Same layout as the repository, so the root manifest's entry point resolves.
+    let folder = plugins.join(PLUGIN_ID);
+    let widget = folder.join("scripts/omarchy-bar");
+    fs::create_dir_all(&widget).map_err(|e| e.to_string())?;
+    fs::write(folder.join("manifest.json"), include_str!("../../manifest.json"))
+        .map_err(|e| e.to_string())?;
     fs::write(
-        folder.join("manifest.json"),
-        include_str!("../../scripts/omarchy-bar/manifest.json"),
-    )
-    .map_err(|e| e.to_string())?;
-    fs::write(
-        folder.join("BarWidget.qml"),
+        widget.join("BarWidget.qml"),
         include_str!("../../scripts/omarchy-bar/BarWidget.qml"),
     )
     .map_err(|e| e.to_string())?;
-    update_bar_widget("omarchy.menu", "super-space.launcher")?;
+    update_bar_widget(LEGACY_PLUGIN_ID, PLUGIN_ID)?;
+    update_bar_widget("omarchy.menu", PLUGIN_ID)?;
     let _ = Command::new("systemd-run")
         .args([
             "--user",

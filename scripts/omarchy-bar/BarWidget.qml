@@ -4,7 +4,7 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "super-space.launcher"
+  moduleName: "io.github.aayush9029.super-space"
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
   WidgetButton {

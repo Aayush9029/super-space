@@ -31,7 +31,7 @@ try:
     assert not (home / ".config/systemd/user/super-space.service").exists()
     assert not (home / ".local/bin/super-space").exists()
     assert 'require("hypr.super-space")' not in hyprland.read_text()
-    assert "super-space.launcher" not in widget_ids()
+    assert "io.github.aayush9029.super-space" not in widget_ids()
     assert "omarchy.menu" in widget_ids()
     assert bridge_path not in browser_flags.read_text()
     assert not chromium_host.exists()
@@ -45,7 +45,7 @@ finally:
 assert browser_flags.read_text() == browser_before
 assert bridge_path in browser_flags.read_text()
 assert chromium_host.exists() and firefox_host.exists()
-assert "super-space.launcher" in widget_ids()
+assert "io.github.aayush9029.super-space" in widget_ids()
 assert hyprland.read_text().count('require("hypr.super-space")') == 1
 assert all(path.read_bytes() == value for path, value in snapshots.items())
 subprocess.run([str(binary), "ping"], check=True)
