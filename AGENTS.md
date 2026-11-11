@@ -56,7 +56,7 @@ Keep local icon assets and aliases used by extensions. Check that images render 
 
 Use SSH for development. Prefer unit, protocol, and fixture tests on Linux. Run focused checks while iterating, then the relevant full suites before publishing.
 
-Use Safari MCP for real browser interaction. Do not use Chrome-based automation. Native UI interaction needs authorization from the current task. If the user asks for no desktop changes, avoid opening windows, sending keys, changing focus, or modifying the clipboard. Capture screenshots only within the authorized scope.
+Native UI interaction needs authorization from the current task. If the user asks for no desktop changes, avoid opening windows, sending keys, changing focus, or modifying the clipboard. Capture screenshots only within the authorized scope.
 
 Some `verify-*` scripts restart the launcher or operate desktop features. Read them first. Use isolated validators and disposable windows or homes when available. A headless test pass does not establish visual correctness.
 
@@ -70,22 +70,12 @@ This validates the archive and real installer in disposable homes. Keep the pack
 
 ## Keep the repository clear
 
-Prefer clear names and direct code. Comments should explain non-obvious constraints or architectural decisions. Do not add comments, TODO annotations, or change notes to Markdown or configuration files.
-
 Keep the README brief and consumer-facing. Put contributor instructions in `CONTRIBUTING.md`, security guidance in `SECURITY.md`, and operational detail in the development docs. Use plain language, avoid em dashes, and remove repeated explanations. Add assets only when the product, documentation, or tests use them.
 
 Remove code only after checking build roots, imports, runtime lookup, and tests. Do not commit credentials, private machine details, generated bundles, or temporary validation output. Do not discard unrelated user changes.
 
 ## Publish
 
-When asked to add and push changes, use the repository's commit helper:
+Use one conventional commit subject with no body. Use the `aayush/` prefix when you create a branch, unless the user supplies another name. The default branch is `master`.
 
-```sh
-source ~/.oh-my-zsh/custom/dotfiles/zsh/ccm.zsh
-ccm
-git push
-```
-
-Do not replace `ccm` with manual staging or commits. Use one conventional commit subject with no body. Use the `aayush/` prefix when creating a branch unless the user supplies another name.
-
-Keep pull request titles descriptive and explanations proportional to the change. State what changed, what passed, and any remaining limitations. Create release tags only when a release is requested; the tag must match the Cargo version. Verify the pushed revision and working tree before reporting completion.
+Keep pull request titles descriptive and explanations proportional to the change. State what changed, what passed, and any remaining limitations. Create a release tag only when the user asks for a release. Tag `vX.Y.Z` to match the `Cargo.toml` version; a pushed `v*` tag runs `.github/workflows/release.yml`, which builds and publishes the GitHub release. Verify the pushed revision and working tree before reporting completion.
